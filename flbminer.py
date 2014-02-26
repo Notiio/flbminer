@@ -5,7 +5,7 @@ FlashbackMiner.py
 The script mines a given Flashback.org forum thread and extracts all posts and their metadata as raw data.
 Use this tool if you need clean JSON formatted data from any Flashback thread.
 
-Version 0.3
+Version 0.4
 Created: 2014-01-18
 By: Joar Svensson
 Company: Notiio.se
