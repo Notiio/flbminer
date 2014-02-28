@@ -20,7 +20,7 @@ Example: ./FlashbackMiner.py -l https://www.flashback.org/t2299507 -o dump.xls -
 try:
 	from bs4 import BeautifulSoup
 	import tablib
-	import sys, argparse, time, urllib2, re, json, os.path, csv
+	import sys, argparse, time, urllib2, re, json, os.path, csv, codecs
 except ImportError as e:
 	print '{message}: {error}'.format(message='Terminating due to errors. Please install dependencies', error=e)
 	sys.exit(1)
