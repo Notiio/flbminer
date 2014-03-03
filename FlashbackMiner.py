@@ -146,7 +146,9 @@ class FlashBThread():
 		except Exception as e:
 			print e
 
-# Forum post class
+'''
+Forum post class
+'''
 class FlashBPost:
 	def __init__(self):
 		self.post = {}
