@@ -25,7 +25,9 @@ except ImportError as e:
 	print '{message}: {error}'.format(message='Terminating due to errors. Please install dependencies', error=e)
 	sys.exit(1)
 
-# Forum thread class for processing and exporting data
+'''
+Class for processing and exporting data from flashback.org forum threads
+'''
 class FlashBThread():
 	def __init__(self, url, fileName, format):
 		self.url = url
