@@ -5,12 +5,13 @@ FlashbackMiner.py
 The script mines a given Flashback.org forum thread and extracts all posts and their metadata as raw data.
 Use this tool if you need clean JSON formatted data from any Flashback thread.
 
-Version 0.4
+Version 0.5
 Created: 2014-01-18
+Updated: 2015-10-13
 By: Joar Svensson
 Company: Notiio.se
 
-External dependencies: BeautifulSoup4, tablib
+External dependencies: BeautifulSoup4, tablib, lxml
 
 Usage: ./FlashbackMiner.py [-h] -l LINK -o OUTPUT -f FORMAT
 Example: ./FlashbackMiner.py -l https://www.flashback.org/t2299507 -o dump.json -f json
@@ -22,7 +23,7 @@ try:
 	import tablib
 	import sys, argparse, time, urllib2, re, json, os.path, csv, codecs
 except ImportError as e:
-	print '{message}: {error}'.format(message='Terminating due to errors. Please install dependencies', error=e)
+	print '{message}: {error}'.format(message='Terminating due to errors. Please install the dependencies BeautifulSoup4, tablib and lxml)', error=e)
 	sys.exit(1)
 
 '''
@@ -48,7 +49,7 @@ class FlashBThread():
 			startTime = time.time()
 			# Get HTML from url and start parsing
 			html = urllib2.urlopen(self.url).read()
-			soup = BeautifulSoup(html)
+			soup = BeautifulSoup(html, "lxml")
 			
 			# Assign title to object
 			self.title = soup.title.string.encode('utf-8')
@@ -118,29 +119,29 @@ class FlashBThread():
 			print e
 	
 	# Dump all data to either JSON, XLS or CSV format
-	def dump(self,self.fileName,self.format):
+	def dump(self):
 		try:
 			data = {"title":self.title,"url":self.url,"pages":self.pages,"posts_count":self.posts_count,"posts":self.posts}
-			if format == 'json':
-				with open(fileName, 'w') as tmpFile:
+			if self.format == 'json':
+				with open(self.fileName, 'w') as tmpFile:
 					JSON_data = json.dumps(data)
 					tmpFile.write(JSON_data)
-				print '{heading}: {data}'.format(heading='File saved as', data=fileName)
-			elif format == 'xls':
-				with open(fileName, 'wb') as tmpFile:
+				print '{heading}: {data}'.format(heading='File saved as', data=self.fileName)
+			elif self.format == 'xls':
+				with open(self.fileName, 'wb') as tmpFile:
 					xlsData = tablib.Dataset()
 					xlsData.headers = ['post_id', 'post_date', 'post_body', 'user_name', 'user_reg_date', 'user_total_posts']
 					for post in self.posts:
 						xlsData.append([post['post_id'], post['post_date'], post['post_body'], post['user_name'], post['user_reg_date'], post['user_total_posts']])
 					tmpFile.write(xlsData.xls)
-				print '{heading}: {data}'.format(heading='File saved as', data=fileName)
-			elif format == 'csv':
-				with codecs.open(fileName, 'a','utf-8') as csvFile:
+				print '{heading}: {data}'.format(heading='File saved as', data=self.fileName)
+			elif self.format == 'csv':
+				with codecs.open(self.fileName, 'a','utf-8') as csvFile:
 					csvFile.write('post_id, post_date, post_body, user_name, user_reg_date, user_total_posts\n')
 					for post in self.posts:
 						csvFile.write(str(post['post_id']) + ',' + post['post_date'] +','+ post['post_body'] +','+ post['user_name']+','+ post['user_reg_date']+','+ str(post['user_total_posts'])+'\n')
 				
-				print '{heading}: {data}'.format(heading='File saved as', data=fileName)
+				print '{heading}: {data}'.format(heading='File saved as', data=self.fileName)
 			else:
 				print 'Encoding format missing, please specifiy one, e.g json/xls/csv'
 		except Exception as e:
